@@ -1,0 +1,9 @@
+*.iml
+.gradle
+/.idea/*
+/captures/
+/local.properties
+
+build/
+
+!/.idea/codeStyles
