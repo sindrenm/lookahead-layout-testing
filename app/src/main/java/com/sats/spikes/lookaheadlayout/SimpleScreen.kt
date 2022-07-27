@@ -33,16 +33,14 @@ fun SimpleScreen() {
 
     LookaheadLayout(
         content = {
-            val lookaheadLayoutScope = this
-
             Box(Modifier.fillMaxSize()) {
                 val placementModifier = if (isCentered) Modifier.align(Alignment.Center) else Modifier
 
                 Column(
                     widthModifier
                         .then(placementModifier)
-                        .animateConstraints(lookaheadLayoutScope)
-                        .animatePlacement(lookaheadLayoutScope)
+                        .animateConstraints()
+                        .animatePlacement()
                         .clickable(
                             onClick = { isCentered = !isCentered },
                             indication = null,

@@ -19,8 +19,9 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+context(LookaheadLayoutScope)
 @ExperimentalComposeUiApi
-fun Modifier.animateConstraints(lookaheadLayoutScope: LookaheadLayoutScope): Modifier {
+fun Modifier.animateConstraints(): Modifier {
     return composed {
         var sizeAnimation: Animatable<IntSize, AnimationVector2D>? by remember {
             mutableStateOf(null)
@@ -41,17 +42,15 @@ fun Modifier.animateConstraints(lookaheadLayoutScope: LookaheadLayoutScope): Mod
                 }
         }
 
-        with(lookaheadLayoutScope) {
-            intermediateLayout { measurable, _, lookaheadSize ->
-                targetSize = lookaheadSize
+        intermediateLayout { measurable, _, lookaheadSize ->
+            targetSize = lookaheadSize
 
-                val actualSize = sizeAnimation?.value ?: lookaheadSize
-                val constraints = Constraints.fixed(actualSize.width, actualSize.height)
-                val placeable = measurable.measure(constraints)
+            val actualSize = sizeAnimation?.value ?: lookaheadSize
+            val constraints = Constraints.fixed(actualSize.width, actualSize.height)
+            val placeable = measurable.measure(constraints)
 
-                layout(placeable.width, placeable.height) {
-                    placeable.place(0, 0)
-                }
+            layout(placeable.width, placeable.height) {
+                placeable.place(0, 0)
             }
         }
     }

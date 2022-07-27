@@ -20,8 +20,9 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+context(LookaheadLayoutScope)
 @ExperimentalComposeUiApi
-fun Modifier.animatePlacement(lookaheadLayoutScope: LookaheadLayoutScope): Modifier {
+fun Modifier.animatePlacement(): Modifier {
     return composed {
         var offsetAnimation: Animatable<IntOffset, AnimationVector2D>? by remember {
             mutableStateOf(null)
@@ -43,29 +44,27 @@ fun Modifier.animatePlacement(lookaheadLayoutScope: LookaheadLayoutScope): Modif
                 }
         }
 
-        with(lookaheadLayoutScope) {
-            onPlaced { lookaheadScopeCoordinates, layoutCoordinates ->
-                placementOffset = lookaheadScopeCoordinates
-                    .localPositionOf(layoutCoordinates, Offset.Zero)
-                    .round()
+        onPlaced { lookaheadScopeCoordinates, layoutCoordinates ->
+            placementOffset = lookaheadScopeCoordinates
+                .localPositionOf(layoutCoordinates, Offset.Zero)
+                .round()
 
-                targetOffset = lookaheadScopeCoordinates
-                    .localLookaheadPositionOf(layoutCoordinates)
-                    .round()
-            }.intermediateLayout { measurable, constraints, _ ->
-                val placeable = measurable.measure(constraints)
+            targetOffset = lookaheadScopeCoordinates
+                .localLookaheadPositionOf(layoutCoordinates)
+                .round()
+        }.intermediateLayout { measurable, constraints, _ ->
+            val placeable = measurable.measure(constraints)
 
-                layout(placeable.width, placeable.height) {
-                    val offsetValue = offsetAnimation?.value
+            layout(placeable.width, placeable.height) {
+                val offsetValue = offsetAnimation?.value
 
-                    val (x, y) = if (offsetValue != null) {
-                        offsetValue - placementOffset
-                    } else {
-                        targetOffset!! - placementOffset
-                    }
-
-                    placeable.place(x, y)
+                val (x, y) = if (offsetValue != null) {
+                    offsetValue - placementOffset
+                } else {
+                    targetOffset!! - placementOffset
                 }
+
+                placeable.place(x, y)
             }
         }
     }
