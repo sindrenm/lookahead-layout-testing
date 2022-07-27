@@ -39,8 +39,7 @@ fun SimpleScreen() {
                 Column(
                     widthModifier
                         .then(placementModifier)
-                        .animateConstraints()
-                        .animatePlacement()
+                        .animateConstraintsAndPlacement()
                         .clickable(
                             onClick = { isCentered = !isCentered },
                             indication = null,
